@@ -1,0 +1,49 @@
+# yc-hiring-agent configuration. Every key is optional; unset keys use defaults.
+
+# ---- Eligibility window: "funded by YC in the past N years" -----------------
+years_back: 3
+as_of: null          # ISO date (YYYY-MM-DD) to evaluate "now", or null for today (UTC)
+# Approximate first month of each YC season, used to date a batch for the window
+# check. Tighten these if you want a stricter cutoff at the season boundary.
+season_start_month:
+  winter: 1
+  spring: 4
+  summer: 6
+  fall: 9
+
+# ---- "Truly a startup, not an MNC" guards -----------------------------------
+max_team_size: 500       # drop anything bigger; recent-batch startups are tiny
+require_active: true     # drop Acquired / Public / Inactive companies
+exclude_top_company: false  # set true to also drop YC "top company" badge holders
+
+# ---- What counts as a "software related role" -------------------------------
+software_roles: ["eng"]  # YC's own role facet; authoritative classification
+title_fallback:
+  enabled: true          # also accept clearly-software titles tagged elsewhere
+  include_patterns: []   # empty -> sensible software-title defaults are used
+  exclude_patterns: []   # empty -> mechanical/EE/hardware/sales eng. excluded
+
+# ---- Sources / transport / output -------------------------------------------
+yc_oss_base: "https://yc-oss.github.io/api"
+
+algolia:
+  app_id: "45BWZJ1SGC"
+  api_key: null          # public search-only key; null -> discovered at runtime
+  jobs_index: "WaaSPublicCompanyJob_created_at_desc_production"
+  bootstrap_url: "https://www.workatastartup.com"
+  bootstrap_from_page: true
+
+http:
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+  min_interval_seconds: 0.34   # global rate ceiling (~3 req/s)
+  timeout_seconds: 20
+  max_retries: 5
+  backoff_factor: 0.8
+  cache_ttl_seconds: 86400     # cache responses for a day; reruns are cheap
+  cache_path: ".cache/http_cache.sqlite"
+  respect_robots: true
+
+output:
+  dir: "out"
+  jsonl: true
+  csv: true

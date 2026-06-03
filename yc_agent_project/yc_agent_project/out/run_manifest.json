@@ -1,0 +1,20 @@
+{
+  "summary": {
+    "eligible_companies": 1748,
+    "open_software_jobs": 642,
+    "matched_companies": 215,
+    "matched_jobs": 298,
+    "as_of": "2026-06-02",
+    "cutoff": "2023-06-01"
+  },
+  "filters": {
+    "years_back": 3,
+    "max_team_size": 500,
+    "require_active": true,
+    "exclude_top_company": false,
+    "software_roles": [
+      "eng"
+    ],
+    "title_fallback_enabled": true
+  }
+}

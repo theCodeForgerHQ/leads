@@ -1,0 +1,38 @@
+# ============================================================================
+# Append this block to your existing config.yaml (the matcher ignores unknown
+# top-level keys it doesn't read; the enrichment layer reads only this block).
+# The API key is NOT here on purpose: export HUNTER_API_KEY in your environment.
+# ============================================================================
+enrichment:
+  provider: hunter
+  hunter_base: "https://api.hunter.io/v2"
+
+  # Which roles you want. A contact is kept only if its title maps to one of
+  # these. "other" is never auto-included.
+  target_roles: [ceo, cto, founder, engineering_lead, hr, talent]
+
+  # ---- "Verified only" policy --------------------------------------------
+  keep_statuses: ["valid"]      # only confirmed-deliverable mailboxes
+  include_accept_all: false     # catch-all domains can't be individually verified
+  min_confidence: 0             # optional extra floor on provider score (0-100)
+  cross_check_with_self_verifier: false  # re-check provider "valid" via your own SMTP
+
+  # ---- Role-inbox fallback (safe, non-personal) --------------------------
+  role_inbox_fallback: true
+  role_inbox_localparts: [careers, jobs, hiring, talent, recruiting, founders, hello, team]
+
+  # ---- Compliance --------------------------------------------------------
+  suppression_file: "out/suppression.txt"   # addresses here are NEVER emitted
+
+  # ---- Self-hosted SMTP verification (OFF by default; see README caveats) -
+  smtp:
+    enabled: false
+    mail_from: "verify@your-domain.com"   # use a domain you actually control
+    timeout_seconds: 10
+    detect_catch_all: true
+
+  # ---- transport ---------------------------------------------------------
+  user_agent: "yc-hiring-agent-enrich/1.0 (+set-a-real-contact@example.com)"
+  min_interval_seconds: 0.2     # well under Hunter's 15 req/s, 500 req/min
+  cache_ttl_seconds: 21600
+  cache_path: ".cache/enrich_cache.sqlite"
